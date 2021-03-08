@@ -1,6 +1,7 @@
 package main
 
 import (
+	"errors"
 	"flag"
 	"fmt"
 	"io/ioutil"
@@ -20,14 +21,13 @@ func log(message string) {
 }
 
 func main() {
-	err, usage := run()
-	if err != "" {
-		log(err)
-		if usage {
+	if err := run(); err != nil {
+		message := err.Error()
+		log(message)
+		if _, ok := err.(usageError); ok {
 			message := fmt.Sprintf("run '%s help' for usage information", name)
 			log(message)
 		}
-		os.Exit(1)
 	}
 }
 
@@ -36,24 +36,24 @@ func makeName() string {
 	return filepath.Base(path)
 }
 
-func parseInterval() (time.Duration, string) {
+func parseInterval() (time.Duration, error) {
 	set := flag.NewFlagSet("", flag.ContinueOnError)
 	var interval time.Duration
 	set.DurationVar(&interval, "interval", 10*time.Second, "")
 	set.SetOutput(ioutil.Discard)
 	args := args[2:]
 	if err := set.Parse(args); err != nil {
-		return 0, "got invalid flags"
+		return 0, errors.New("got invalid flags")
 	}
 	if interval <= 0 {
-		return 0, "got invalid interval"
+		return 0, errors.New("got invalid interval")
 	}
-	return interval, ""
+	return interval, nil
 }
 
-func run() (string, bool) {
+func run() error {
 	if nbArgs := len(args); nbArgs < 2 {
-		return "missing command", true
+		return usageError{message: "missing command"}
 	}
 	switch args[1] {
 	case "help":
@@ -72,21 +72,28 @@ Options:
   -interval=<interval> Repository update interval, greater than zero [default: 10s]
 `
 		fmt.Fprintf(os.Stdout, usage, name)
-		return "", false
+		return nil
 
 	case "track":
 		interval, err := parseInterval()
-		if err != "" {
-			err := fmt.Sprintf("failed parsing interval: %s", err)
-			return err, true
+		if err != nil {
+			message := fmt.Sprintf("failed parsing interval: %v", err)
+			return usageError{message: message}
 		}
 		if err := internal.Track(interval); err != nil {
-			err := fmt.Sprintf("failed tracking: %v", err)
-			return err, false
+			return fmt.Errorf("failed tracking: %v", err)
 		}
-		return "", false
+		return nil
 
 	default:
-		return "got invalid command", true
+		return usageError{message: "got invalid command"}
 	}
+}
+
+type usageError struct {
+	message string
+}
+
+func (e usageError) Error() string {
+	return e.message
 }
