@@ -73,7 +73,7 @@ Your solutions for the assignments will be graded according to the following poi
 
 ### Practicalities
 
-- You can use any library you want.
+- You can use any library you want, but we prefer the standard library.
 - These practices are important on the job, but won't affect your grades:
   - proper version control,
   - testing (which is complex for a CLI without business logic).
