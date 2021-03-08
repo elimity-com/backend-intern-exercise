@@ -66,7 +66,6 @@ Your solutions for the assignments will be graded according to the following poi
 - compliance with the listed requirements,
 - consistency with the existing code,
 - understanding of Go fundamentals,
-- documentation, testing, and
 - adherence to Elimity's style guidelines:
   - strong types over implicit assumptions,
   - immutability over mutability, and
@@ -75,4 +74,6 @@ Your solutions for the assignments will be graded according to the following poi
 ### Practicalities
 
 - You can use any library you want.
-- We recommend proper version control, but won't take it into account during grading.
+- These practices are important on the job, but won't affect your grades:
+  - proper version control,
+  - testing (which is complex for a CLI without business logic).

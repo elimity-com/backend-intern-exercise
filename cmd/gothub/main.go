@@ -9,7 +9,6 @@ import (
 	"time"
 
 	"github.com/elimity-com/backend-intern-exercise/internal"
-	"github.com/google/go-github/v33/github"
 )
 
 var args = os.Args
@@ -76,13 +75,12 @@ Options:
 		return "", false
 
 	case "track":
-		client := github.NewClient(nil)
 		interval, err := parseInterval()
 		if err != "" {
 			err := fmt.Sprintf("failed parsing interval: %s", err)
 			return err, true
 		}
-		if err := internal.Track(client.Search.Repositories, interval); err != nil {
+		if err := internal.Track(interval); err != nil {
 			err := fmt.Sprintf("failed tracking: %v", err)
 			return err, false
 		}
