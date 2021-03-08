@@ -39,14 +39,14 @@ assignments consist of extending its functionality. More specifically, we ask yo
 
 1. GitHub applies very strict rate limiting for anonymous requests, causing `gothub` to fail when it contacts the API
    too frequently. As stated [here](https://docs.github.com/en/rest/reference/search#rate-limit), the rate limit could
-   be increased by using authenticated requests. Therefore we ask you to add a `token` option to the `gothub` CLI, which
-   should authenticate its requests using the supplied
-   [GitHub personal access token](https://docs.github.com/en/github/authenticating-to-github/creating-a-personal-access-token).
-   If not provided, `gothub` should stick to anonymous requests.
+   be increased by using authenticated requests. Therefore we ask you to add a `token-file` option to the `gothub` CLI,
+   which should support authenticating requests by reading a
+   [GitHub personal access token](https://docs.github.com/en/github/authenticating-to-github/creating-a-personal-access-token)
+   read from the given file path. If not provided, `gothub` should stick to anonymous requests.
 
 2. Currently `gothub` only prints repository names. We ask you to extend this to a table-formatted output with columns
-   for the repository's owner, name, last update timestamp and star count. The result should look like this (including
-   headers):
+   for the repository's owner, name, last update timestamp and star count. If the repository belongs to an organization,
+   list the organization's name in the owner column. The result should look like this (including headers):
 
 ```
 Owner   | Name      | Updated at (UTC)    | Star count
@@ -56,7 +56,7 @@ angular | angular   | 2021-02-29T05:43:21 | 43210
 ```
 
 3. The repositories outputted by `gothub` are only filtered by their accessibility, as they are all public. We ask you
-   to add a `min-stars` option, which causes `gothub` to filter out repositories with a star count below the supplied
+   to add a `min-stars` option, which causes `gothub` to filter out repositories with a star count below the given
    value. If not provided, `gothub` should use a minimum star count of zero.
 
 ### Grading
